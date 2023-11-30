@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import os
@@ -10,7 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Database connection for PostgreSQL
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgresql+psycopg2://danielgonzalez:your_password@localhost/postgres"
+] = "postgresql+psycopg2://postgres:b9willoltoby@localhost/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Dont need but added to stop console from giving warning
@@ -24,45 +24,73 @@ ma = Marshmallow(app)
 
 
 # Product Class/Model
-class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
-    description = db.Column(db.String(200))
-    price = db.Column(db.Float)
-    qty = db.Column(db.Integer)
+class NBAPlayer(db.Model):
+    __tablename__ = "nba_players"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100))
+    team = db.Column(db.String(100))
+    position = db.Column(db.String(50))
+    height = db.Column(db.String(10))
+    weight = db.Column(db.Numeric(5, 2))
+    points_per_game = db.Column(db.Numeric(5, 2))
+    assists_per_game = db.Column(db.Numeric(5, 2))
+    rebounds_per_game = db.Column(db.Numeric(5, 2))
 
-    def __init__(self, name, description, price, qty):
-        self.name = name
-        self.description = description
-        self.price = price
-        self.qty = qty
 
-
-# product Schema
-class productSchema(ma.Schema):
+# NBAPlayer Schema
+class NBAPlayerSchema(ma.Schema):
     class Meta:
-        fields = ("id", "name", "description", "price", "qty")
+        fields = (
+            "id",
+            "name",
+            "team",
+            "position",
+            "height",
+            "weight",
+            "points_per_game",
+            "assists_per_game",
+            "rebounds_per_game",
+        )
 
 
-# initialize schema
-product_schema = productSchema()
-products_schema = productSchema(many=True)
+# Initialize schema
+nba_player_schema = NBAPlayerSchema()
+nba_players_schema = NBAPlayerSchema(many=True)
 
 
-# Create a Product
-@app.route("/product", methods=["POST"])
-def add_product():
+# Create an NBAPlayer
+@app.route("/nba_player", methods=["POST"])
+def add_nba_player():
     name = request.json["name"]
-    description = request.json["description"]
-    price = request.json["price"]
-    qty = request.json["qty"]
+    team = request.json["team"]
+    position = request.json["position"]
+    height = request.json["height"]
+    weight = request.json["weight"]
+    points_per_game = request.json["points_per_game"]
+    assists_per_game = request.json["assists_per_game"]
+    rebounds_per_game = request.json["rebounds_per_game"]
 
-    new_product = Product(name, description, price, qty)
+    new_nba_player = NBAPlayer(
+        name=name,
+        team=team,
+        position=position,
+        height=height,
+        weight=weight,
+        points_per_game=points_per_game,
+        assists_per_game=assists_per_game,
+        rebounds_per_game=rebounds_per_game,
+    )
 
-    db.session.add(new_product)
+    db.session.add(new_nba_player)
     db.session.commit()
 
-    return product_schema.jsonify(new_product)
+    return nba_player_schema.jsonify(new_nba_player)
+
+
+# API route to serve the HTML template
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 
 # Run Server
