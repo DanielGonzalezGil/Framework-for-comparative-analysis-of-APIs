@@ -31,10 +31,32 @@ class NBAPlayer(db.Model):
     team = db.Column(db.String(100))
     position = db.Column(db.String(50))
     height = db.Column(db.String(10))
-    weight = db.Column(db.Numeric(5, 2))
-    points_per_game = db.Column(db.Numeric(5, 2))
-    assists_per_game = db.Column(db.Numeric(5, 2))
-    rebounds_per_game = db.Column(db.Numeric(5, 2))
+    weight = db.Column(db.Float(5, 2))
+    points_per_game = db.Column(db.Float(5, 2))
+    assists_per_game = db.Column(db.Float(5, 2))
+    rebounds_per_game = db.Column(db.Float(5, 2))
+
+    def __init__(
+        self,
+        id,
+        name,
+        team,
+        position,
+        height,
+        weight,
+        points_per_game,
+        assists_per_game,
+        rebounds_per_game,
+    ):
+        self.id = id
+        self.name = name
+        self.team = team
+        self.position = position
+        self.height = height
+        self.weight = weight
+        self.points_per_game = points_per_game
+        self.assists_per_game = assists_per_game
+        self.rebounds_per_game = rebounds_per_game
 
 
 # NBAPlayer Schema
