@@ -38,7 +38,6 @@ class NBAPlayer(db.Model):
 
     def __init__(
         self,
-        id,
         name,
         team,
         position,
@@ -48,7 +47,6 @@ class NBAPlayer(db.Model):
         assists_per_game,
         rebounds_per_game,
     ):
-        self.id = id
         self.name = name
         self.team = team
         self.position = position
@@ -93,14 +91,14 @@ def add_nba_player():
     rebounds_per_game = request.json["rebounds_per_game"]
 
     new_nba_player = NBAPlayer(
-        name=name,
-        team=team,
-        position=position,
-        height=height,
-        weight=weight,
-        points_per_game=points_per_game,
-        assists_per_game=assists_per_game,
-        rebounds_per_game=rebounds_per_game,
+        name,
+        team,
+        position,
+        height,
+        weight,
+        points_per_game,
+        assists_per_game,
+        rebounds_per_game,
     )
 
     db.session.add(new_nba_player)
