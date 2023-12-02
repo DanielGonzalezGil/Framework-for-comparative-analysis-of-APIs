@@ -10,7 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Database connection for PostgreSQL
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgresql+psycopg2://postgres:b9willoltoby@localhost/postgres"
+] = "postgresql+psycopg2://postgres:password@localhost/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Dont need but added to stop console from giving warning
@@ -108,9 +108,9 @@ def add_nba_player():
 
 
 # API route to serve the HTML template
-@app.route("/")
-def index():
-    return render_template("index.html")
+# @app.route("/")
+# def index():
+#     return render_template("index.html")
 
 
 # Run Server
