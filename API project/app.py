@@ -13,7 +13,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # connection to database
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgresql+psycopg2://postgres:b9willoltoby@localhost:5432/postgres"
+] = "postgresql+psycopg2://postgres:password@localhost:5432/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Dont need but added to stop console from giving warning
@@ -22,12 +22,11 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # initialize DB
 db = SQLAlchemy(app)
 
-
 # initialize ma
 ma = Marshmallow(app)
 
 
-class test(db.Model):
+class NBAplayerStatsTable(db.Model):
     __tablename__ = "nba_players"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100))
@@ -60,6 +59,7 @@ class test(db.Model):
         self.rebounds_per_game = rebounds_per_game
 
 
+# Schema
 class NBAtestSchema(ma.Schema):
     class Meta:
         fields = (
@@ -79,22 +79,61 @@ nba_test_schema = NBAtestSchema()
 nba_tests_schema = NBAtestSchema(many=True)
 
 
-# GET API endpoint
+# GET endpoint
 @app.route("/Get_nba_players", methods=["GET"])
 def get_nba_player():
-    all_players = test.query.all()
+    all_players = NBAplayerStatsTable.query.all()
     result = nba_tests_schema.dump(all_players)
     return jsonify(result)
 
 
-# POST API endpoint
+# POST endpoint
 @app.route("/Post_nba_players", methods=["POST"])
 def add_player():
     name = request.json["name"]
-    record = test(name=name)
+    team = request.json["team"]
+    position = request.json["position"]
+    height = request.json["height"]
+    weight = request.json["weight"]
+    points_per_game = request.json["points_per_game"]
+    assists_per_game = request.json["assists_per_game"]
+    rebounds_per_game = request.json["rebounds_per_game"]
+
+    record = NBAplayerStatsTable(
+        name,
+        team,
+        position,
+        height,
+        weight,
+        points_per_game,
+        assists_per_game,
+        rebounds_per_game,
+    )
     db.session.add(record)
     db.session.commit()
     return nba_test_schema.jsonify(record)
+
+
+# PATCH endpoint
+@app.route("/Update_nba_player/<int:id>", methods=["PATCH"])
+def update_player(id):
+    player = NBAplayerStatsTable.query.get(id)
+
+    if not player:
+        return jsonify({"message": "Player not found"}), 404
+
+    data = request.json
+    player.name = data.get("name", player.name)
+    player.team = data.get("team", player.team)
+    player.position = data.get("position", player.position)
+    player.height = data.get("height", player.height)
+    player.weight = data.get("weight", player.weight)
+    player.points_per_game = data.get("points_per_game", player.points_per_game)
+    player.assists_per_game = data.get("assists_per_game", player.assists_per_game)
+    player.rebounds_per_game = data.get("rebounds_per_game", player.rebounds_per_game)
+
+    db.session.commit()
+    return nba_test_schema.jsonify(player)
 
 
 # Run Server
