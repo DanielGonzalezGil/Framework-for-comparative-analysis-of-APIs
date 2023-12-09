@@ -1,4 +1,4 @@
-# Comparative Analysis of API Architecture Types 	
+# Framework for comparative analysis of APIs 	
 ![gif of skipper](penguins-of-madagascar-skipper.gif)
 
 
@@ -6,7 +6,7 @@
 
 ## Objective 
 
-This project will employ backend web technologies such as Python, Flask, and PostgreSQL, with performance benchmarks taken via Postman to compare RESTful and GraphQL API Architecture types in standard web operations. The research anticipates uncovering the strengths, weaknesses, and performance indicators of both architectures, leading to an in-depth presentation and manuscript offering significant insights into the realm of software development.
+This project aims to create a framework for API testing, involving the development of a RESTful API using Python, Flask, and PostgreSQL. Performance evaluations will be conducted using Postman, focusing on identifying the strengths, weaknesses, and key performance metrics of APIs. The outcome will include a detailed presentation and manuscript, providing valuable insights into software development.
 
 
  
